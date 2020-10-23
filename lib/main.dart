@@ -1,7 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'LogInPage.dart';
+import 'package:karvaan/screens/services/authentication.dart';
+import 'package:karvaan/screens/wrapper.dart';
+import 'screens/authentication/LogInPage.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -23,7 +28,7 @@ class MyApp extends StatelessWidget {
         //test for git
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LogInPage(),
+      home: AuthService().handleAuth(),
     );
   }
 }

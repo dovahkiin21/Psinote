@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:karvaan/SignUpPage.dart';
+import 'package:karvaan/screens/MapsPage.dart';
+import 'package:karvaan/screens/authentication/PhoneVerifPage.dart';
+import 'package:karvaan/screens/authentication/SignUpPage.dart';
+import 'package:karvaan/screens/services/authentication.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:toast/toast.dart';
@@ -7,14 +11,25 @@ import 'package:toast/toast.dart';
 final int user = 0;
 
 class OTPpage extends StatefulWidget {
-  final phoneNumer;
-  OTPpage(this.phoneNumer);
+  final phoneNumber;
+  OTPpage(this.phoneNumber);
   @override
-  _OTPpageState createState() => _OTPpageState();
+  _OTPpageState createState() => _OTPpageState(phoneNumber);
 }
 
 class _OTPpageState extends State<OTPpage> {
-  String otp = '';
+  String phoneNumber;
+  _OTPpageState(this.phoneNumber);
+
+  String verificationId, smsCode;
+  bool codeSent = false;
+
+  @override
+  void initState() {
+    verifyPhone(phoneNumber);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +62,7 @@ class _OTPpageState extends State<OTPpage> {
             Container(
               margin: EdgeInsets.fromLTRB(35, 20, 100, 0),
               child: OTPTextField(
-                length: 5,
+                length: 6,
                 width: MediaQuery.of(context).size.width,
                 fieldWidth: 30,
                 style: TextStyle(
@@ -56,9 +71,10 @@ class _OTPpageState extends State<OTPpage> {
                     fontFamily: 'Montserrat Medium'),
                 textFieldAlignment: MainAxisAlignment.spaceAround,
                 fieldStyle: FieldStyle.underline,
-                onCompleted: (pin) {
-                  otp = pin;
-                  print(otp);
+                onChanged: (pin) {
+                  setState(() {
+                    this.smsCode = pin;
+                  });
                 },
               ),
             ),
@@ -79,8 +95,9 @@ class _OTPpageState extends State<OTPpage> {
                   margin: EdgeInsets.fromLTRB(40, 10, 40, 0),
                   child: new GestureDetector(
                     onTap: () {
-                      Toast.show("Incomplete!", context,
+                      Toast.show("Resending...", context,
                           duration: Toast.LENGTH_SHORT);
+                      verifyPhone(phoneNumber);
                     },
                     child: Text('Resend OTP',
                         style: TextStyle(
@@ -120,17 +137,18 @@ class _OTPpageState extends State<OTPpage> {
                     ],
                   ),
                   onPressed: () {
-                    ////////////////////// For Testing ////////////////////////
-                    if (user == 1) {
-                      //user exists
-                      Toast.show("Incomplete!", context,
-                          duration: Toast.LENGTH_SHORT);
+                    print(codeSent);
+                    if (codeSent) {
+                      AuthService().signInWithOtp(smsCode, verificationId);
+                      return Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MapsPage()));
                     } else {
-                      //new user
+                      Toast.show("Error! Try Again.", context,
+                          duration: Toast.LENGTH_SHORT);
                       return Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SignUpPage()));
+                              builder: (context) => PhoneVerifPage()));
                     }
                   },
                 )),
@@ -138,5 +156,35 @@ class _OTPpageState extends State<OTPpage> {
         ),
       ),
     );
+  }
+
+  Future<void> verifyPhone(phoneNumber) async {
+    final PhoneVerificationCompleted verified = (AuthCredential authResult) {
+      AuthService().signIn(authResult);
+    };
+
+    final PhoneVerificationFailed verificationfailed =
+        (FirebaseAuthException authException) {
+      print('${authException.message}');
+    };
+
+    final PhoneCodeSent smsSent = (String verId, [int forceResend]) {
+      this.verificationId = verId;
+      setState(() {
+        this.codeSent = true;
+      });
+    };
+
+    final PhoneCodeAutoRetrievalTimeout autoTimeOut = (String verId) {
+      this.verificationId = verId;
+    };
+
+    await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: verified,
+        verificationFailed: verificationfailed,
+        codeSent: smsSent,
+        codeAutoRetrievalTimeout: autoTimeOut);
   }
 }

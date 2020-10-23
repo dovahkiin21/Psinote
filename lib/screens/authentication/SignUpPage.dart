@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:karvaan/MapsPage.dart';
+import 'package:karvaan/screens/MapsPage.dart';
 import 'package:toast/toast.dart';
 
 class SignUpPage extends StatefulWidget {

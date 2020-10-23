@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:international_phone_input/international_phone_input.dart';
-import 'package:karvaan/OTPpage.dart';
+import 'package:karvaan/screens/authentication/OTPpage.dart';
+import 'package:karvaan/screens/services/authentication.dart';
 import 'package:toast/toast.dart';
 
 class PhoneVerifPage extends StatefulWidget {
@@ -10,7 +12,8 @@ class PhoneVerifPage extends StatefulWidget {
 }
 
 class _PhoneVerifPageState extends State<PhoneVerifPage> {
-  String phoneNumber = "";
+  String phoneNumber = "", verificationId, smsCode;
+  bool codeSent = false;
   String phoneIsoCode = "IN";
 
   void onPhoneNumberChange(
@@ -20,31 +23,6 @@ class _PhoneVerifPageState extends State<PhoneVerifPage> {
       phoneIsoCode = isoCode;
     });
   }
-
-  // Future<bool> loginUser(String phone) async{         //function to register or login user on firebase
-
-  //   FirebaseAuth _auth = FirebaseAuth.instance;
-  //   _auth.verifyPhoneNumber(
-  //       phoneNumber: phone,
-  //       timeout: Duration(seconds: 60),
-  //       verificationCompleted: (AuthCredential credential) async {
-  //         AuthResult result =await _auth.signInWithCredential(credential);
-  //         FirebaseUser user = result.user;
-  //         if(user!=null) {
-  //           Navigator.push(
-  //               context, MaterialPageRoute(builder: (context) => MapsPage()));
-  //         }
-  //       },
-  //       verificationFailed: (AuthException exception){
-  //         Toast.show(
-  //             exception.toString(), context, duration: Toast.LENGTH_SHORT);
-  //       },
-  //       codeSent: (String verificationId,[int codeResendingToken]){
-
-  //       },
-  //       codeAutoRetrievalTimeout: null
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -130,13 +108,15 @@ class _PhoneVerifPageState extends State<PhoneVerifPage> {
                       ],
                     ),
                     onPressed: () {
-                      print(phoneNumber); //to test
+                      print(phoneNumber);
                       Toast.show("Incomplete!", context,
                           duration: Toast.LENGTH_SHORT);
+
                       return Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => OTPpage(phoneNumber)));
+                              builder: (context) =>
+                                  OTPpage("+91" + phoneNumber)));
                     },
                   ))
             ],

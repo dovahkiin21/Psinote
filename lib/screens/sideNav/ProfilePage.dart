@@ -59,8 +59,8 @@ class _ProfilePageState extends State<ProfilePage> {
             ])),
 
             Container(
-              height: 350,
-              width: 200,
+              height: 380,
+              width: 250,
               color: Color(0xFF1E1E29),
               padding: const EdgeInsets.all(10.0),
               child: Card(
@@ -80,59 +80,61 @@ class _ProfilePageState extends State<ProfilePage> {
                             color: Color(0xFFFFC495)),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(
-                          left: 20, top: 20, right: 280, bottom: 0),
-                      child: Text(
-                        'Phone',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: "Montserrat Medium",
-                            color: Color(0xFFCA9367)),
-                      ),
+                    Row(
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(30.0, 20.0, 10.0, 0.0),
+                            child: Text(
+                              'Phone',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: "Montserrat Medium",
+                                  color: Color(0xFFCA9367)),
+                            )),
+                      ],
                     ),
-                    Container(
-                      margin: EdgeInsets.only(
-                          left: 20, top: 1, right: 215, bottom: 0),
-                      child: Text(
-                        '+91 1234567890',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            fontSize: 19,
-                            fontFamily: "Montserrat Medium",
-                            color: Color(0xFFE5E5E5)),
-                      ),
+                    Row(
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(20.0, 5.0, 10.0, 5.0),
+                            child: Text(
+                              '+91 1234567890',
+                              style: TextStyle(
+                                  fontSize: 19,
+                                  fontFamily: "Montserrat Medium",
+                                  color: Color(0xFFE5E5E5)),
+                            )),
+                      ],
                     ),
-                    Container(
-                      margin: EdgeInsets.only(
-                          left: 20, top: 30, right: 280, bottom: 0),
-                      child: Text(
-                        'Email',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: "Montserrat Medium",
-                            color: Color(0xFFCA9367)),
-                      ),
+                    Row(
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(30.0, 30.0, 10.0, 0.0),
+                            child: Text(
+                              'Email',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: "Montserrat Medium",
+                                  color: Color(0xFFCA9367)),
+                            )),
+                      ],
                     ),
-                    Container(
-                      margin: EdgeInsets.only(
-                          left: 20, top: 1, right: 150, bottom: 0),
-                      child: Text(
-                        'johnwick@gmail.com',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            fontSize: 19,
-                            fontFamily: "Montserrat Medium",
-                            color: Color(0xFFE5E5E5)),
-                      ),
+                    Row(
+                      children: [
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(20.0, 5.0, 10.0, 5.0),
+                            child: Text(
+                              'johnwick@gmail.com',
+                              style: TextStyle(
+                                  fontSize: 19,
+                                  fontFamily: "Montserrat Medium",
+                                  color: Color(0xFFE5E5E5)),
+                            )),
+                      ],
                     ),
-                    Container(
-                        width: 80,
-                        height: 80,
-                        margin: EdgeInsets.only(
-                            left: 300, top: 0, right: 20, bottom: 1),
+                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 5.0),
                         child: FloatingActionButton(
                           heroTag: "btn1",
                           backgroundColor: Color(0xFFCA9367),
@@ -141,7 +143,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             Icons.edit,
                             size: 30,
                           ),
-                        )),
+                        ),
+                      ),
+                    ]),
                   ],
                 ),
               ),
@@ -158,15 +162,19 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
 
-            Container(
-              margin: EdgeInsets.only(left: 20, top: 30, right: 230, bottom: 0),
-              child: Text(
-                'My Cycles',
-                style: TextStyle(
-                    fontSize: 27,
-                    fontFamily: "Montserrat Bold",
-                    color: Color(0xFFE5E5E5)),
-              ),
+            Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20.0, 30.0, 20.0, 5.0),
+                  child: Text(
+                    'My Cycles',
+                    style: TextStyle(
+                        fontSize: 27,
+                        fontFamily: "Montserrat Bold",
+                        color: Color(0xFFE5E5E5)),
+                  ),
+                ),
+              ],
             ),
 
             //Here begins the second card,displaying a person's cycles....

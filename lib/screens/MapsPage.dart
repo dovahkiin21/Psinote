@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocation/geolocation.dart';
-import 'package:karvaan/ChatPage.dart';
-import 'package:karvaan/ProfilePage.dart';
-
+import 'package:karvaan/screens/ChatPage.dart';
+import 'package:karvaan/screens/services/authentication.dart';
+import 'package:karvaan/screens/sideNav/ProfilePage.dart';
 import 'package:latlong/latlong.dart';
-import 'Presentation/menu_icon_icons.dart';
+import '../Presentation/menu_icon_icons.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:toast/toast.dart';
@@ -158,14 +158,13 @@ class _MapsPageState extends State<MapsPage> {
                   color: Color(0xFFFFC495),
                 ),
                 title: Text(
-                  'Chat Page (temporary)',
+                  'Log Out',
                   style: TextStyle(
                       fontFamily: 'Montserrat SemiBold',
                       color: Color(0xFFFFC495)),
                 ),
                 onTap: () {
-                  return Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChatPage()));
+                  AuthService().signOut();
                 },
               ),
               Divider(
