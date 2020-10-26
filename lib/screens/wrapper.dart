@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:karvaan/LogInPage.dart';
+import 'file:///D:/Projects/karvaan/lib/screens/authentication/LogInPage.dart';
 import 'package:karvaan/screens/MapsPage.dart';
 
 class Wrapper extends StatelessWidget {

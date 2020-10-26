@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:karvaan/screens/authentication/PhoneVerifPage.dart';
 import 'package:toast/toast.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
-// import 'PhoneVerifPage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 
 class LogInPage extends StatefulWidget {
   @override
@@ -10,6 +12,31 @@ class LogInPage extends StatefulWidget {
 }
 
 class _LogInPageState extends State<LogInPage> {
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseUser _user;
+  final GoogleSignIn googleSignIn = new GoogleSignIn();
+
+   bool isSignIn = false;
+
+  Future<void> handleSignIn() async {
+    GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+
+    AuthCredential credential = GoogleAuthProvider.getCredential(
+        idToken: googleSignInAuthentication.idToken,
+        accessToken: googleSignInAuthentication.accessToken);
+
+    //AuthResult result = (await _auth.signInWithCredential(credential));
+
+    _user = (await _auth.signInWithCredential(credential)).user;
+
+    setState(() {
+      isSignIn = true;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,18 +108,7 @@ class _LogInPageState extends State<LogInPage> {
               margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
               child: GoogleSignInButton(
                 onPressed: () {
-                  Toast.show("Incomplete!", context,
-                      duration: Toast.LENGTH_SHORT);
-                  // return Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => GoogleLogInPage()));
-                  // signInWithGoogle().then((result) {
-                  //   if (result != null) {
-                  //     Toast.show(
-                  //         "Incomplete!", context, duration: Toast.LENGTH_SHORT);
-                  //   }
-                  // });
+                  handleSignIn();
                 },
                 borderRadius: 17.0,
                 darkMode: true,

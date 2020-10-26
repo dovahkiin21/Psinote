@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:karvaan/screens/services/authentication.dart';
 import 'package:karvaan/screens/wrapper.dart';
-import 'screens/authentication/LogInPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
