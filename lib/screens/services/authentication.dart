@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'file:///D:/Projects/karvaan/lib/screens/authentication/LogInPage.dart';
 import 'package:karvaan/screens/MapsPage.dart';
+import 'package:karvaan/screens/authentication/LogInPage.dart';
 
 class AuthService {
   //handle auth

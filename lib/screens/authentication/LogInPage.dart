@@ -5,19 +5,17 @@ import 'package:toast/toast.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-
 class LogInPage extends StatefulWidget {
   @override
   _LogInPageState createState() => _LogInPageState();
 }
 
 class _LogInPageState extends State<LogInPage> {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser _user;
   final GoogleSignIn googleSignIn = new GoogleSignIn();
 
-   bool isSignIn = false;
+  bool isSignIn = false;
 
   Future<void> handleSignIn() async {
     GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();

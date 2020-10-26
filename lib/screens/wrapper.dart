@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'file:///D:/Projects/karvaan/lib/screens/authentication/LogInPage.dart';
-import 'package:karvaan/screens/MapsPage.dart';
+import 'package:karvaan/screens/authentication/LogInPage.dart';
 
 class Wrapper extends StatelessWidget {
   @override
