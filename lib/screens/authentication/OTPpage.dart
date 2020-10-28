@@ -41,13 +41,6 @@ class _OTPpageState extends State<OTPpage> {
                                 .setData({
                                   'phoneNo': phoneNo,
                                 });
-
-                            DocumentReference ref = await databaseReference.collection("books")
-                                .add({
-                                  'title': 'Flutter in Action',
-                                  'description': 'Complete Programming Guide to learn Flutter'
-                                });
-                            print(ref.documentID);
                           }
 
 

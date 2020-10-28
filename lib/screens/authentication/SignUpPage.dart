@@ -37,12 +37,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                   'name': name,
                                 });
 
-                            DocumentReference ref = await databaseReference.collection("books")
-                                .add({
-                                  'title': 'Flutter in Action',
-                                  'description': 'Complete Programming Guide to learn Flutter'
-                                });
-                            print(ref.documentID);
                           }
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
