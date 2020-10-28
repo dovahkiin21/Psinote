@@ -22,19 +22,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         final uid = user.uid;
 
                         return uid;
-
-                        // here you write the codes to input the data into firestore
                       }
 
-  //  void createRecord(String email, String name) async {
-  //                           await databaseReference.collection("users")
-  //                               .document(getUId())
-  //                               .setData({
-  //                                 'email': email,
-  //                                 'name': name,
-  //                               });
-
-  //                         }
 
   void updateData(String email, String name) {
   try {
