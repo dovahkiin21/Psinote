@@ -21,52 +21,10 @@ class MapsPage extends StatefulWidget {
 
 class _MapsPageState extends State<MapsPage> {
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final databaseReference = Firestore.instance;
-
-  String getUId() {
-                        final User user = _auth.currentUser;
-                        final uid = user.uid;
-
-                        Toast.show(uid, context,
-                          duration: Toast.LENGTH_SHORT);
-
-                        return uid;
-
-                        // here you write the codes to input the data into firestore
-                      }
-
-  User getUser() {
-                        final User user = _auth.currentUser;
-
-                        return user;
-
-                        // here you write the codes to input the data into firestore
-                      }
-
-   void createRecord(String email, String name,String phoneNo) async {
-                            await databaseReference.collection("users")
-                                .document(getUId())
-                                .setData({
-                                  'email': email,
-                                  'name': name,
-                                  'phoneNo': phoneNo,
-                                });
-
-                            DocumentReference ref = await databaseReference.collection("books")
-                                .add({
-                                  'title': 'Flutter in Action',
-                                  'description': 'Complete Programming Guide to learn Flutter'
-                                });
-                            print(ref.documentID);
-                          }
-
-
   LatLng current_location;
 
   @override
   void initState() {
-    createRecord(getUser().email, getUser().displayName,getUser().phoneNumber);
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.initState();
   }
