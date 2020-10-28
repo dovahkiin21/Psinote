@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:karvaan/screens/MapsPage.dart';
 import 'package:karvaan/screens/authentication/PhoneVerifPage.dart';
 import 'package:toast/toast.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
@@ -107,6 +108,11 @@ class _LogInPageState extends State<LogInPage> {
               child: GoogleSignInButton(
                 onPressed: () {
                   handleSignIn();
+
+                  return Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MapsPage()));
                 },
                 borderRadius: 17.0,
                 darkMode: true,

@@ -7,6 +7,7 @@ import 'package:karvaan/screens/services/authentication.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:toast/toast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final int user = 0;
 
@@ -18,6 +19,38 @@ class OTPpage extends StatefulWidget {
 }
 
 class _OTPpageState extends State<OTPpage> {
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final databaseReference = Firestore.instance;
+
+  String inputData() {
+                        final User user = _auth.currentUser;
+                        final uid = user.uid;
+
+                        Toast.show(uid, context,
+                          duration: Toast.LENGTH_SHORT);
+
+                        return uid;
+
+                        // here you write the codes to input the data into firestore
+                      }
+
+   void createRecord(String phoneNo) async {
+                            await databaseReference.collection("users")
+                                .document(inputData())
+                                .setData({
+                                  'phoneNo': phoneNo,
+                                });
+
+                            DocumentReference ref = await databaseReference.collection("books")
+                                .add({
+                                  'title': 'Flutter in Action',
+                                  'description': 'Complete Programming Guide to learn Flutter'
+                                });
+                            print(ref.documentID);
+                          }
+
+
   String phoneNumber;
   _OTPpageState(this.phoneNumber);
 
@@ -140,8 +173,9 @@ class _OTPpageState extends State<OTPpage> {
                     print(codeSent);
                     if (codeSent) {
                       AuthService().signInWithOtp(smsCode, verificationId);
+                      createRecord(phoneNumber);
                       return Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => MapsPage()));
+                          MaterialPageRoute(builder: (context) => SignUpPage()));
                     } else {
                       Toast.show("Error! Try Again.", context,
                           duration: Toast.LENGTH_SHORT);

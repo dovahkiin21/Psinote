@@ -1,6 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:karvaan/screens/MapsPage.dart';
+import 'package:karvaan/screens/authentication/PhoneVerifPage.dart';
 import 'package:toast/toast.dart';
+import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -8,11 +13,46 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final databaseReference = Firestore.instance;
+
+  String inputData() {
+                        final User user = _auth.currentUser;
+                        final uid = user.uid;
+
+                        Toast.show(uid, context,
+                          duration: Toast.LENGTH_SHORT);
+
+                        return uid;
+
+                        // here you write the codes to input the data into firestore
+                      }
+
+   void createRecord(String email, String name) async {
+                            await databaseReference.collection("users")
+                                .document(inputData())
+                                .setData({
+                                  'email': email,
+                                  'name': name,
+                                });
+
+                            DocumentReference ref = await databaseReference.collection("books")
+                                .add({
+                                  'title': 'Flutter in Action',
+                                  'description': 'Complete Programming Guide to learn Flutter'
+                                });
+                            print(ref.documentID);
+                          }
+
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   TextEditingController nameController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
 
   String _name, _email;
+
+  // CrudMethods crudObj = new CrudMethods();
+  // UserManagement obj = new UserManagement();
 
   String emailValidator(String value) {
     //to check email
@@ -150,13 +190,28 @@ class _SignUpPageState extends State<SignUpPage> {
                 margin: EdgeInsets.fromLTRB(25, 160, 25, 20),
                 child: FlatButton(
                   onPressed: () {
-                    print("Email: " + emailController.text.toString());
-                    print("name: " + nameController.text.toString());
-                    Toast.show("Incomplete!", context,
-                        duration: Toast.LENGTH_SHORT);
+
+                    _email = emailController.text.toString();
+                    _name = nameController.text.toString();
+
+                    //inputData;
+                    createRecord(_email, _name);
+
+                    // print("Email: " + emailController.text.toString());
+                    // print("name: " + nameController.text.toString());
+                    // Toast.show("Incomplete!", context,
+                    //     duration: Toast.LENGTH_SHORT);
+
+                    // Navigator.of(context).pop();
+                    // Map user = {
+                    //   'email': this._email,
+                    //   'name': this._name
+                    // };
+                    //crudObj.addData(userData); 
+                    // obj.storeNewUSer(user,context);
 
                     return Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => MapsPage()));
+                        MaterialPageRoute(builder: (context) => PhoneVerifPage()));
                   },
                   child: Text("REGISTER",
                       style: TextStyle(
