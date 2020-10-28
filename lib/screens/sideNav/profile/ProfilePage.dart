@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:karvaan/models/Cycles.dart';
 import 'package:latlong/latlong.dart';
 import 'package:karvaan/screens/MapsPageRenter.dart';
 import 'package:karvaan/screens/sideNav/profile/RequestPage.dart';
@@ -17,39 +18,68 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  List<String> names =
-      <String>[]; //defining lists for names and rates of bicycles..
-  List<String> rates = <String>[];
-  String newlocation = "";
-  String newBikeName = "";
-  String newBikeRent = "";
+  String uId;
+  List<Cycles> allCycles = <Cycles>[];
+  Cycles newCycle;
   TextEditingController _newBikeNameController = new TextEditingController();
   TextEditingController _newBikeRentController = new TextEditingController();
   TextEditingController _newBikeLocationController =
       new TextEditingController();
   bool isSwitched = false;
 
-  Future addNewBikeToFirebase() async {
-    //add new bike location(lat and long) to firebase database
-    final query = newlocation;
-    var addresses = await Geocoder.local.findAddressesFromQuery(query);
-    var first = addresses.first;
+  getUserId() {
     FirebaseAuth auth = FirebaseAuth.instance;
-    String uId = '';
     if (auth.currentUser != null) {
       uId = auth.currentUser.uid;
     }
+  }
+
+  Future getUserBikesFromFirebase() async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uId)
+        .collection("lenderBikes")
+        .get()
+        .then((QuerySnapshot querySnapshot) => {
+              querySnapshot.docs.forEach((doc) {
+                String name = doc["name"];
+                String rent = doc["pricePerHr"];
+                String location = doc["location"];
+                GeoPoint coords = doc["coordinates"];
+                Cycles cycle = Cycles(
+                  name,
+                  location,
+                  coords,
+                  rent,
+                );
+                allCycles.add(cycle);
+              })
+            });
+  }
+
+  @override
+  void initState() {
+    getUserId();
+    super.initState();
+  }
+
+  Future addNewBikeToFirebase() async {
+    //add new bike location(lat and long) to firebase database
+    final query = newCycle.location;
+    var addresses = await Geocoder.local.findAddressesFromQuery(query);
+    var first = addresses.first;
+
     Firestore.instance //adding new bike document
         .collection('users')
         .doc(uId)
         .collection("lenderBikes")
-        .doc(newBikeName)
+        .doc(newCycle.name)
         .set({
       'coordinates':
           new GeoPoint(first.coordinates.latitude, first.coordinates.longitude),
-      'location': newlocation,
-      'pricePerHr': newBikeRent,
-      'name': newBikeName,
+      'location': newCycle.location,
+      'pricePerHr': newCycle.pricePerHr,
+      'name': newCycle.name,
     });
   }
 
@@ -264,12 +294,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void addItemToList() {
     setState(() {
-      newlocation = _newBikeLocationController.text.toString();
-      names.insert(
-          0,
-          _newBikeNameController.text
-              .toString()); //function to add inputs provided by the user to the lists and making a card at the top of the list.
-      rates.insert(0, _newBikeRentController.text.toString());
+      newCycle = new Cycles(
+          _newBikeNameController.text.toString(),
+          _newBikeLocationController.text.toString(),
+          new GeoPoint(0, 0),
+          _newBikeRentController.text.toString());
     });
   }
 
@@ -455,7 +484,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: names.length,
+                      itemCount: allCycles.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Card(
                           shape: RoundedRectangleBorder(
@@ -503,7 +532,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                             ),
                             title: Text(
-                              '${names[index]}',
+                              '${allCycles[index].name}',
                               style: TextStyle(
                                   fontSize: 18,
                                   fontFamily: "Montserrat Medium",
@@ -538,7 +567,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   height: 8,
                                 ),
                                 Text(
-                                  'Rs. ${rates[index]} per hr.',
+                                  'Rs. ${allCycles[index].pricePerHr} per hr.',
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontFamily: "Montserrat Regular",
