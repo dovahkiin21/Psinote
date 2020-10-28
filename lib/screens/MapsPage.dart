@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocation/geolocation.dart';
 import 'package:karvaan/screens/ChatPage.dart';
 import 'package:karvaan/screens/services/authentication.dart';
-import 'package:karvaan/screens/sideNav/ProfilePage.dart';
+import 'package:karvaan/screens/sideNav/profile/ProfilePage.dart';
 import 'package:latlong/latlong.dart';
 import '../Presentation/menu_icon_icons.dart';
 import 'package:flutter/services.dart';
@@ -77,6 +78,7 @@ class _MapsPageState extends State<MapsPage> {
         current_location =
             new LatLng(response.location.latitude, response.location.longitude);
         // });
+        print(current_location);
       }
     });
   }

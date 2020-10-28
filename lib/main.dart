@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:karvaan/screens/SplashScreen.dart';
 import 'package:karvaan/screens/services/authentication.dart';
-import 'package:karvaan/screens/wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,14 +20,14 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Karvaan',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.grey,
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
         //test for git
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: AuthService().handleAuth(),
+      home: SplashScreen(),
     );
   }
 }
