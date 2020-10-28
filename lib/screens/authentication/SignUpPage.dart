@@ -21,9 +21,6 @@ class _SignUpPageState extends State<SignUpPage> {
                         final User user = _auth.currentUser;
                         final uid = user.uid;
 
-                        Toast.show(uid, context,
-                          duration: Toast.LENGTH_SHORT);
-
                         return uid;
 
                         // here you write the codes to input the data into firestore
