@@ -17,7 +17,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final databaseReference = Firestore.instance;
 
-  String inputData() {
+  String getUId() {
                         final User user = _auth.currentUser;
                         final uid = user.uid;
 
@@ -29,15 +29,29 @@ class _SignUpPageState extends State<SignUpPage> {
                         // here you write the codes to input the data into firestore
                       }
 
-   void createRecord(String email, String name) async {
-                            await databaseReference.collection("users")
-                                .document(inputData())
-                                .setData({
-                                  'email': email,
-                                  'name': name,
-                                });
+  //  void createRecord(String email, String name) async {
+  //                           await databaseReference.collection("users")
+  //                               .document(getUId())
+  //                               .setData({
+  //                                 'email': email,
+  //                                 'name': name,
+  //                               });
 
-                          }
+  //                         }
+
+  void updateData(String email, String name) {
+  try {
+    databaseReference
+        .collection('users')
+        .document(getUId())
+        .updateData({
+          'email': email,
+          'name': name,
+        });
+  } catch (e) {
+    print(e.toString());
+  }
+}
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   TextEditingController nameController = new TextEditingController();
@@ -189,7 +203,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     _name = nameController.text.toString();
 
                     //inputData;
-                    createRecord(_email, _name);
+                    updateData(_email, _name);
 
                     // print("Email: " + emailController.text.toString());
                     // print("name: " + nameController.text.toString());
