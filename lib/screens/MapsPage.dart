@@ -18,7 +18,7 @@ class MapsPage extends StatefulWidget {
 }
 
 class _MapsPageState extends State<MapsPage> {
-  LatLng current_location;
+  LatLng current_location, refresh_location;
 
   @override
   void initState() {
@@ -36,6 +36,30 @@ class _MapsPageState extends State<MapsPage> {
     // new LatLng(25.59,81.87),
     // new LatLng(25.62,81.89),
   ];
+
+  List<Marker> allMarkers = [];
+  setMarkers() {
+    allMarkers.add(
+      new Marker(
+          width: 30.0,
+          height: 30.0,
+          point: refresh_location,
+          builder: (context) => new Container(
+                child: IconButton(
+                  icon: Icon(
+                    Icons.location_on,
+                    color: Color(0xFFFFC495),
+                  ),
+                  color: Colors.red,
+                  iconSize: 30,
+                  onPressed: () {
+                    print(current_location);
+                  },
+                ),
+              )),
+    );
+    return allMarkers;
+  }
 
   MapController controller = new MapController();
 
@@ -77,6 +101,7 @@ class _MapsPageState extends State<MapsPage> {
             15.0);
         current_location =
             new LatLng(response.location.latitude, response.location.longitude);
+        refresh_location = current_location;
         // });
         print(current_location);
       }
@@ -220,40 +245,7 @@ class _MapsPageState extends State<MapsPage> {
               //   ]
               // ),
               //
-              new MarkerLayerOptions(markers: [
-                new Marker(
-                    width: 30.0,
-                    height: 30.0,
-                    point: current_location,
-                    builder: (context) => new Container(
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.location_on,
-                              color: Color(0xFFFFC495),
-                            ),
-                            color: Colors.red,
-                            iconSize: 30,
-                            onPressed: () {
-                              print(current_location);
-                            },
-                          ),
-                        )),
-                // new Marker(
-                //     width: 30.0,
-                //     height: 30.0,
-                //     point : new LatLng(25.49,81.85),
-                //     builder: (context) => new Container(
-                //       child: IconButton(
-                //         icon: Icon(Icons.location_on , color: Color(0xFF1E1E29),),
-                //         color: Colors.red,
-                //         iconSize: 30,
-                //         onPressed: () {
-                //           print('Marker tapped');
-                //         },
-                //       ),
-                //     )
-                // ),
-              ])
+              new MarkerLayerOptions(markers: setMarkers())
             ],
           ),
           DraggableScrollableSheet(
@@ -415,7 +407,23 @@ class _MapsPageState extends State<MapsPage> {
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
                     },
-                  )
+                  ),
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(
+                      MdiIcons.rotateLeft,
+                      color: Color(0xFFFFC495),
+                      size: 40,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        refresh_location = current_location;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
                 ],
               ),
             ],
