@@ -205,7 +205,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     // obj.storeNewUSer(user,context);
 
                     return Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PhoneVerifPage()));
+                        MaterialPageRoute(builder: (context) => MapsPage()));
                   },
                   child: Text("REGISTER",
                       style: TextStyle(

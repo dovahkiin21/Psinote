@@ -40,6 +40,8 @@ class _OTPpageState extends State<OTPpage> {
                                 .document(inputData())
                                 .setData({
                                   'phoneNo': phoneNo,
+                                  'name': "",
+                                  'email': "",
                                 });
                           }
 
