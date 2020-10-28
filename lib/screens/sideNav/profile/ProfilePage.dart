@@ -1,7 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:latlong/latlong.dart';
 import 'package:karvaan/screens/MapsPageRenter.dart';
 import 'package:karvaan/screens/sideNav/profile/RequestPage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -16,9 +20,38 @@ class _ProfilePageState extends State<ProfilePage> {
   List<String> names =
       <String>[]; //defining lists for names and rates of bicycles..
   List<String> rates = <String>[];
+  String newlocation = "";
+  String newBikeName = "";
+  String newBikeRent = "";
   TextEditingController _newBikeNameController = new TextEditingController();
   TextEditingController _newBikeRentController = new TextEditingController();
+  TextEditingController _newBikeLocationController =
+      new TextEditingController();
   bool isSwitched = false;
+
+  Future addNewBikeToFirebase() async {
+    //add new bike location(lat and long) to firebase database
+    final query = newlocation;
+    var addresses = await Geocoder.local.findAddressesFromQuery(query);
+    var first = addresses.first;
+    FirebaseAuth auth = FirebaseAuth.instance;
+    String uId = '';
+    if (auth.currentUser != null) {
+      uId = auth.currentUser.uid;
+    }
+    Firestore.instance //adding new bike document
+        .collection('users')
+        .doc(uId)
+        .collection("lenderBikes")
+        .doc(newBikeName)
+        .set({
+      'coordinates':
+          new GeoPoint(first.coordinates.latitude, first.coordinates.longitude),
+      'location': newlocation,
+      'pricePerHr': newBikeRent,
+      'name': newBikeName,
+    });
+  }
 
   Future<int> createAlertDialog(BuildContext context) {
     return showDialog(
@@ -31,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Padding(
               padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
               child: Container(
-                height: 290,
+                height: 350,
                 width: 276,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ),
                           SizedBox(
-                            height: 42,
+                            height: 30,
                           ),
                           Text(
                             "Rate",
@@ -134,6 +167,34 @@ class _ProfilePageState extends State<ProfilePage> {
                               ],
                             ),
                           ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Text(
+                            "Location",
+                            style: TextStyle(
+                                fontFamily: "Montserrat Medium",
+                                fontSize: 14,
+                                color: Color(0xFFCA9367)),
+                          ),
+                          Container(
+                            height: 30,
+                            width: 200,
+                            child: TextFormField(
+                              style: TextStyle(
+                                  fontFamily: "Montserrat SemiBold",
+                                  color: Color(0xFF1E1E29)),
+                              textAlign: TextAlign.start,
+                              autocorrect: false,
+                              controller: _newBikeLocationController,
+                              validator: (String value) {
+                                if (value.isEmpty) {
+                                  return 'Bike Location is Required';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -174,10 +235,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           child: FlatButton(
                             onPressed: () {
+                              addItemToList();
+                              addNewBikeToFirebase();
                               Toast.show("Incomplete!", context,
                                   duration: Toast.LENGTH_SHORT);
-                              Navigator.of(context)
-                                  .pop(addItemToList()); //pass bike data
+                              Navigator.of(context).pop(); //pass bike data
                             },
                             child: Center(
                               child: Text(
@@ -202,6 +264,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void addItemToList() {
     setState(() {
+      newlocation = _newBikeLocationController.text.toString();
       names.insert(
           0,
           _newBikeNameController.text
@@ -383,6 +446,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   createAlertDialog(context);
                   _newBikeNameController.clear();
                   _newBikeRentController.clear();
+                  _newBikeLocationController.clear();
                 }),
             SizedBox(
               height: 200,

@@ -11,8 +11,6 @@ import '../Presentation/menu_icon_icons.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:toast/toast.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class MapsPage extends StatefulWidget {
   @override
@@ -20,53 +18,10 @@ class MapsPage extends StatefulWidget {
 }
 
 class _MapsPageState extends State<MapsPage> {
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final databaseReference = Firestore.instance;
-
-  String getUId() {
-                        final User user = _auth.currentUser;
-                        final uid = user.uid;
-
-                        Toast.show(uid, context,
-                          duration: Toast.LENGTH_SHORT);
-
-                        return uid;
-
-                        // here you write the codes to input the data into firestore
-                      }
-
-  User getUser() {
-                        final User user = _auth.currentUser;
-
-                        return user;
-
-                        // here you write the codes to input the data into firestore
-                      }
-
-   void createRecord(String email, String name,String phoneNo) async {
-                            await databaseReference.collection("users")
-                                .document(getUId())
-                                .setData({
-                                  'email': email,
-                                  'name': name,
-                                  'phoneNo': phoneNo,
-                                });
-
-                            DocumentReference ref = await databaseReference.collection("books")
-                                .add({
-                                  'title': 'Flutter in Action',
-                                  'description': 'Complete Programming Guide to learn Flutter'
-                                });
-                            print(ref.documentID);
-                          }
-
-
-  LatLng current_location;
+  LatLng current_location, refresh_location;
 
   @override
   void initState() {
-    createRecord(getUser().email, getUser().displayName,getUser().phoneNumber);
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.initState();
   }
@@ -81,6 +36,30 @@ class _MapsPageState extends State<MapsPage> {
     // new LatLng(25.59,81.87),
     // new LatLng(25.62,81.89),
   ];
+
+  List<Marker> allMarkers = [];
+  setMarkers() {
+    allMarkers.add(
+      new Marker(
+          width: 30.0,
+          height: 30.0,
+          point: refresh_location,
+          builder: (context) => new Container(
+                child: IconButton(
+                  icon: Icon(
+                    Icons.location_on,
+                    color: Color(0xFFFFC495),
+                  ),
+                  color: Colors.red,
+                  iconSize: 30,
+                  onPressed: () {
+                    print(current_location);
+                  },
+                ),
+              )),
+    );
+    return allMarkers;
+  }
 
   MapController controller = new MapController();
 
@@ -122,6 +101,7 @@ class _MapsPageState extends State<MapsPage> {
             15.0);
         current_location =
             new LatLng(response.location.latitude, response.location.longitude);
+        refresh_location = current_location;
         // });
         print(current_location);
       }
@@ -265,40 +245,7 @@ class _MapsPageState extends State<MapsPage> {
               //   ]
               // ),
               //
-              new MarkerLayerOptions(markers: [
-                new Marker(
-                    width: 30.0,
-                    height: 30.0,
-                    point: current_location,
-                    builder: (context) => new Container(
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.location_on,
-                              color: Color(0xFFFFC495),
-                            ),
-                            color: Colors.red,
-                            iconSize: 30,
-                            onPressed: () {
-                              print(current_location);
-                            },
-                          ),
-                        )),
-                // new Marker(
-                //     width: 30.0,
-                //     height: 30.0,
-                //     point : new LatLng(25.49,81.85),
-                //     builder: (context) => new Container(
-                //       child: IconButton(
-                //         icon: Icon(Icons.location_on , color: Color(0xFF1E1E29),),
-                //         color: Colors.red,
-                //         iconSize: 30,
-                //         onPressed: () {
-                //           print('Marker tapped');
-                //         },
-                //       ),
-                //     )
-                // ),
-              ])
+              new MarkerLayerOptions(markers: setMarkers())
             ],
           ),
           DraggableScrollableSheet(
@@ -460,7 +407,23 @@ class _MapsPageState extends State<MapsPage> {
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
                     },
-                  )
+                  ),
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(
+                      MdiIcons.rotateLeft,
+                      color: Color(0xFFFFC495),
+                      size: 40,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        refresh_location = current_location;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
                 ],
               ),
             ],

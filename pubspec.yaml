@@ -24,6 +24,7 @@ dependencies:
   flutter_svg: ^0.19.0
   toast: ^0.1.5
   shimmer: ^1.1.2
+  geocoder: ^0.2.1
   simple_animations: ^2.2.0
   material_design_icons_flutter: 4.0.5655
   international_phone_input: ^1.0.4
